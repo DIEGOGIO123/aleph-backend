@@ -263,6 +263,13 @@ def get_estadisticas():
         'clientesActivos': len(datos['clientes']),
         'vendedoresActivos': len([u for u in datos['usuarios'] if u['rol'] == 'vendedor'])
     })
+@app.route('/')
+def home():
+    return jsonify({
+        'mensaje': 'API de Aleph Consulting funcionando correctamente',
+        'estado': 'en linea',
+        'endpoints_disponibles': ['/api/health', '/api/productos', '/api/login', '/api/registro', '/api/pedidos']
+    })
 
 @app.route('/api/health', methods=['GET'])
 def health():
