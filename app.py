@@ -1,8 +1,7 @@
 # ============================================
 # BACKEND ALEPH CONSULTING - API COMPLETA
-# Con autenticación Firebase y gestión de usuarios
+# Versión optimizada para Railway
 # Archivo: app.py
-# Ejecutar: python app.py
 # ============================================
 
 from flask import Flask, request, jsonify
@@ -61,12 +60,11 @@ def guardar_datos(datos):
 
 datos = cargar_datos()
 
-# ========== FUNCIONES ==========
 def verificar_token(headers):
     auth = headers.get('Authorization', '')
     return True if auth else False
 
-# ========== ENDPOINTS DE AUTENTICACIÓN ==========
+# ========== ENDPOINTS ==========
 @app.route('/api/login', methods=['POST'])
 def login():
     data = request.json
@@ -93,13 +91,11 @@ def login():
 
 @app.route('/api/login/firebase', methods=['POST'])
 def login_firebase():
-    """Login con Firebase - recibe el token de Firebase y busca/crea usuario"""
     data = request.json
     email = data.get('email')
     nombre = data.get('nombre', email.split('@')[0])
     firebaseUid = data.get('firebaseUid')
     
-    # Buscar usuario existente
     usuario = None
     for u in datos['usuarios']:
         if u['email'] == email or u.get('firebaseUid') == firebaseUid:
@@ -107,7 +103,6 @@ def login_firebase():
             break
     
     if usuario:
-        # Actualizar firebaseUid si no lo tiene
         if not usuario.get('firebaseUid'):
             usuario['firebaseUid'] = firebaseUid
             guardar_datos(datos)
@@ -121,7 +116,6 @@ def login_firebase():
             }
         })
     else:
-        # Crear nuevo usuario
         nuevo_id = max([u['id'] for u in datos['usuarios']]) + 1 if datos['usuarios'] else 1
         nuevo_usuario = {
             'id': nuevo_id,
@@ -145,13 +139,11 @@ def login_firebase():
 
 @app.route('/api/registro', methods=['POST'])
 def registro():
-    """Registro manual de nuevo usuario"""
     data = request.json
     email = data.get('email')
     password = data.get('password')
     nombre = data.get('nombre')
     
-    # Verificar si ya existe
     for u in datos['usuarios']:
         if u['email'] == email:
             return jsonify({'error': 'El email ya está registrado'}), 400
@@ -178,7 +170,6 @@ def registro():
         }
     }), 201
 
-# ========== RESTO DE ENDPOINTS (igual que antes) ==========
 @app.route('/api/usuarios', methods=['GET'])
 def get_usuarios():
     usuarios_safe = [{'id': u['id'], 'email': u['email'], 'nombre': u['nombre'], 'rol': u['rol']} for u in datos['usuarios']]
@@ -243,7 +234,6 @@ def pagar_pedido(id):
             pedido['montoPagado'] = data.get('montoPagado', pedido['total'])
             pedido['fechaPago'] = datetime.now().isoformat()
             guardar_datos(datos)
-            print(f"\n💰 PAGO SIMULADO: Pedido #{id} pagado")
             return jsonify({'success': True, 'pedido': pedido})
     return jsonify({'error': 'Pedido no encontrado'}), 404
 
@@ -278,16 +268,15 @@ def get_estadisticas():
 def health():
     return jsonify({'status': 'OK', 'timestamp': datetime.now().isoformat()})
 
+# ========== INICIO DEL SERVIDOR (VERSIÓN RAILWAY) ==========
 if __name__ == '__main__':
-    print("""
+    port = int(os.environ.get('PORT', 5000))
+    print(f"""
     ╔══════════════════════════════════════════════════════╗
     ║   🚀 API ALEPH CONSULTING ACTIVADA                   ║
     ╠══════════════════════════════════════════════════════╣
-    ║   Puerto: 5000                                       ║
-    ║   URL: http://localhost:5000                         ║
-    ╠══════════════════════════════════════════════════════╣
-    ║   🔐 Autenticación: Email + Google + Apple           ║
-    ║   💳 Pagos parciales: ACTIVADOS                      ║
+    ║   Puerto: {port}                                       ║
+    ║   Entorno: {'Producción' if port != 5000 else 'Desarrollo'}
     ╚══════════════════════════════════════════════════════╝
     """)
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=port, debug=False)
