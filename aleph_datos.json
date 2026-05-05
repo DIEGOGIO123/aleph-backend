@@ -1,0 +1,210 @@
+{
+  "usuarios": [
+    {
+      "id": 1,
+      "email": "admin@aleph.com",
+      "password": "admin123",
+      "nombre": "Administrador",
+      "rol": "admin"
+    },
+    {
+      "id": 2,
+      "email": "vendedor@aleph.com",
+      "password": "123456",
+      "nombre": "Diego Colchado",
+      "rol": "vendedor"
+    },
+    {
+      "id": 3,
+      "email": "PEPE@gmail.com",
+      "password": "12345678",
+      "nombre": "PEPE GANGA",
+      "rol": "vendedor"
+    },
+    {
+      "id": 4,
+      "email": "dieggogio@gmail.com",
+      "nombre": "Diego Giovanni Colchado Lira",
+      "rol": "vendedor",
+      "firebaseUid": "JEQRnNp1rhWMVGZWfjgLqyOPgcz1",
+      "password": null
+    }
+  ],
+  "productos": [
+    {
+      "id": 1,
+      "nombre": "NeoMelubrina",
+      "presentacion": "10 PZS",
+      "precio": 75,
+      "categoria": "medicamento",
+      "imagen": "💊"
+    },
+    {
+      "id": 2,
+      "nombre": "NeoMelubrina",
+      "presentacion": "24 PZS",
+      "precio": 130,
+      "categoria": "medicamento",
+      "imagen": "💊"
+    },
+    {
+      "id": 3,
+      "nombre": "Ibuprofeno",
+      "presentacion": "20 PZS",
+      "precio": 85,
+      "categoria": "medicamento",
+      "imagen": "💊"
+    },
+    {
+      "id": 4,
+      "nombre": "Paracetamol",
+      "presentacion": "30 PZS",
+      "precio": 70,
+      "categoria": "medicamento",
+      "imagen": "💊"
+    },
+    {
+      "id": 5,
+      "nombre": "Omeprazol",
+      "presentacion": "14 PZS",
+      "precio": 95,
+      "categoria": "medicamento",
+      "imagen": "💊"
+    },
+    {
+      "id": 6,
+      "nombre": "Losartán",
+      "presentacion": "28 PZS",
+      "precio": 180,
+      "categoria": "medicamento",
+      "imagen": "💊"
+    },
+    {
+      "id": 7,
+      "nombre": "Metformina",
+      "presentacion": "30 PZS",
+      "precio": 75,
+      "categoria": "medicamento",
+      "imagen": "💊"
+    },
+    {
+      "id": 8,
+      "nombre": "Vitamina C",
+      "presentacion": "30 PZS",
+      "precio": 120,
+      "categoria": "vitaminas",
+      "imagen": "🍊"
+    },
+    {
+      "id": 9,
+      "nombre": "Jabón Antibacterial",
+      "presentacion": "1 PZ",
+      "precio": 25,
+      "categoria": "higiene",
+      "imagen": "🧼"
+    },
+    {
+      "id": 10,
+      "nombre": "Alcohol Gel",
+      "presentacion": "300ml",
+      "precio": 45,
+      "categoria": "higiene",
+      "imagen": "🧴"
+    },
+    {
+      "id": 11,
+      "nombre": "Cubrebocas KN95",
+      "presentacion": "10 PZS",
+      "precio": 120,
+      "categoria": "higiene",
+      "imagen": "😷"
+    },
+    {
+      "id": 12,
+      "nombre": "Termómetro Digital",
+      "presentacion": "1 PZ",
+      "precio": 220,
+      "categoria": "equipo",
+      "imagen": "🌡️"
+    },
+    {
+      "id": 13,
+      "nombre": "Baumanómetro",
+      "presentacion": "1 PZ",
+      "precio": 550,
+      "categoria": "equipo",
+      "imagen": "🩺"
+    }
+  ],
+  "clientes": [
+    {
+      "id": 1,
+      "nombre": "Farmacia Guadalajara",
+      "telefono": "5551112233",
+      "direccion": "Av. Central #123",
+      "vendedorAsignado": 2
+    },
+    {
+      "id": 2,
+      "nombre": "Farmacias Similares",
+      "telefono": "5552223344",
+      "direccion": "Insurgentes #456",
+      "vendedorAsignado": 2
+    },
+    {
+      "id": 3,
+      "nombre": "Farmacia San Pablo",
+      "telefono": "5553334455",
+      "direccion": "Reforma #789",
+      "vendedorAsignado": 2
+    },
+    {
+      "id": 4,
+      "nombre": "Walmart Farmacia",
+      "telefono": "5554445566",
+      "direccion": "Periférico #321",
+      "vendedorAsignado": 2
+    },
+    {
+      "id": 5,
+      "nombre": "Farmacia Benavides",
+      "telefono": "5555556677",
+      "direccion": "Universidad #654",
+      "vendedorAsignado": 2
+    },
+    {
+      "id": 6,
+      "nombre": "farmacia",
+      "telefono": "",
+      "direccion": "av ",
+      "vendedorAsignado": null
+    }
+  ],
+  "pedidos": [
+    {
+      "id": 1,
+      "fecha": "2026-05-04T22:20:36.402868",
+      "clienteId": 5,
+      "clienteNombre": "Farmacia Benavides",
+      "vendedor": "Vendedor",
+      "vendedorId": 2,
+      "productos": [
+        {
+          "id": 1,
+          "nombre": "NeoMelubrina",
+          "presentacion": "10 PZS",
+          "cantidad": 1,
+          "precio": 75
+        }
+      ],
+      "total": 75,
+      "formaPago": "completo",
+      "montoPagado": 75,
+      "correoTicket": "dieggogio@gmail.com",
+      "observaciones": "",
+      "estado": "confirmado",
+      "pagado": true,
+      "fechaPago": "2026-05-04T22:20:40.768956"
+    }
+  ]
+}
