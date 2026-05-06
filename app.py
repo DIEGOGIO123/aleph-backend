@@ -23,19 +23,19 @@ DATOS_INICIALES = {
         {"id": 2, "email": "vendedor@aleph.com", "password": "123456", "nombre": "Diego Colchado", "rol": "vendedor", "firebaseUid": None}
     ],
     "productos": [
-        {"id": 1, "nombre": "NeoMelubrina", "presentacion": "10 PZS", "precio": 75, "categoria": "medicamento", "imagen": "💊"},
-        {"id": 2, "nombre": "NeoMelubrina", "presentacion": "24 PZS", "precio": 130, "categoria": "medicamento", "imagen": "💊"},
-        {"id": 3, "nombre": "Ibuprofeno", "presentacion": "20 PZS", "precio": 85, "categoria": "medicamento", "imagen": "💊"},
-        {"id": 4, "nombre": "Paracetamol", "presentacion": "30 PZS", "precio": 70, "categoria": "medicamento", "imagen": "💊"},
-        {"id": 5, "nombre": "Omeprazol", "presentacion": "14 PZS", "precio": 95, "categoria": "medicamento", "imagen": "💊"},
-        {"id": 6, "nombre": "Losartán", "presentacion": "28 PZS", "precio": 180, "categoria": "medicamento", "imagen": "💊"},
-        {"id": 7, "nombre": "Metformina", "presentacion": "30 PZS", "precio": 75, "categoria": "medicamento", "imagen": "💊"},
-        {"id": 8, "nombre": "Vitamina C", "presentacion": "30 PZS", "precio": 120, "categoria": "vitaminas", "imagen": "🍊"},
-        {"id": 9, "nombre": "Jabón Antibacterial", "presentacion": "1 PZ", "precio": 25, "categoria": "higiene", "imagen": "🧼"},
-        {"id": 10, "nombre": "Alcohol Gel", "presentacion": "300ml", "precio": 45, "categoria": "higiene", "imagen": "🧴"},
-        {"id": 11, "nombre": "Cubrebocas KN95", "presentacion": "10 PZS", "precio": 120, "categoria": "higiene", "imagen": "😷"},
-        {"id": 12, "nombre": "Termómetro Digital", "presentacion": "1 PZ", "precio": 220, "categoria": "equipo", "imagen": "🌡️"},
-        {"id": 13, "nombre": "Baumanómetro", "presentacion": "1 PZ", "precio": 550, "categoria": "equipo", "imagen": "🩺"}
+        {"id": 1, "nombre": "NeoMelubrina", "presentacion": "10 PZS", "precio": 75, "categoria": "medicamento", "imagen": "💊", "stock": 10},
+        {"id": 2, "nombre": "NeoMelubrina", "presentacion": "24 PZS", "precio": 130, "categoria": "medicamento", "imagen": "💊", "stock": 10},
+        {"id": 3, "nombre": "Ibuprofeno", "presentacion": "20 PZS", "precio": 85, "categoria": "medicamento", "imagen": "💊", "stock": 10},
+        {"id": 4, "nombre": "Paracetamol", "presentacion": "30 PZS", "precio": 70, "categoria": "medicamento", "imagen": "💊", "stock": 10},
+        {"id": 5, "nombre": "Omeprazol", "presentacion": "14 PZS", "precio": 95, "categoria": "medicamento", "imagen": "💊", "stock": 10},
+        {"id": 6, "nombre": "Losartán", "presentacion": "28 PZS", "precio": 180, "categoria": "medicamento", "imagen": "💊", "stock": 10},
+        {"id": 7, "nombre": "Metformina", "presentacion": "30 PZS", "precio": 75, "categoria": "medicamento", "imagen": "💊", "stock": 10},
+        {"id": 8, "nombre": "Vitamina C", "presentacion": "30 PZS", "precio": 120, "categoria": "vitaminas", "imagen": "🍊", "stock": 10},
+        {"id": 9, "nombre": "Jabón Antibacterial", "presentacion": "1 PZ", "precio": 25, "categoria": "higiene", "imagen": "🧼", "stock": 10},
+        {"id": 10, "nombre": "Alcohol Gel", "presentacion": "300ml", "precio": 45, "categoria": "higiene", "imagen": "🧴", "stock": 10},
+        {"id": 11, "nombre": "Cubrebocas KN95", "presentacion": "10 PZS", "precio": 120, "categoria": "higiene", "imagen": "😷", "stock": 10},
+        {"id": 12, "nombre": "Termómetro Digital", "presentacion": "1 PZ", "precio": 220, "categoria": "equipo", "imagen": "🌡️", "stock": 10},
+        {"id": 13, "nombre": "Baumanómetro", "presentacion": "1 PZ", "precio": 550, "categoria": "equipo", "imagen": "🩺", "stock": 10}
     ],
     "clientes": [
         {"id": 1, "nombre": "Farmacia Guadalajara", "telefono": "5551112233", "direccion": "Av. Central #123", "vendedorAsignado": 2},
@@ -64,7 +64,7 @@ def verificar_token(headers):
     auth = headers.get('Authorization', '')
     return True if auth else False
 
-# ========== ENDPOINTS ==========
+# ========== ENDPOINTS DE AUTENTICACIÓN ==========
 @app.route('/api/login', methods=['POST'])
 def login():
     data = request.json
@@ -170,11 +170,13 @@ def registro():
         }
     }), 201
 
+# ========== ENDPOINTS DE USUARIOS ==========
 @app.route('/api/usuarios', methods=['GET'])
 def get_usuarios():
     usuarios_safe = [{'id': u['id'], 'email': u['email'], 'nombre': u['nombre'], 'rol': u['rol']} for u in datos['usuarios']]
     return jsonify(usuarios_safe)
 
+# ========== ENDPOINTS DE CLIENTES ==========
 @app.route('/api/clientes', methods=['GET'])
 def get_clientes():
     return jsonify(datos['clientes'])
@@ -194,10 +196,63 @@ def crear_cliente():
     guardar_datos(datos)
     return jsonify({'success': True, 'cliente': nuevo_cliente}), 201
 
+# ========== ENDPOINTS DE PRODUCTOS ==========
 @app.route('/api/productos', methods=['GET'])
 def get_productos():
     return jsonify(datos['productos'])
 
+@app.route('/api/productos', methods=['POST'])
+def crear_producto():
+    """Crear un nuevo producto"""
+    data = request.json
+    nuevo_id = max([p['id'] for p in datos['productos']]) + 1 if datos['productos'] else 1
+    
+    nuevo_producto = {
+        'id': nuevo_id,
+        'nombre': data.get('nombre'),
+        'presentacion': data.get('presentacion', ''),
+        'precio': data.get('precio'),
+        'stock': data.get('stock', 0),
+        'imagen': data.get('imagen', '💊'),
+        'categoria': data.get('categoria', 'medicamento')
+    }
+    
+    datos['productos'].append(nuevo_producto)
+    guardar_datos(datos)
+    
+    return jsonify({'success': True, 'producto': nuevo_producto}), 201
+
+@app.route('/api/productos/<int:id>', methods=['PUT'])
+def actualizar_producto(id):
+    """Actualizar producto (precio, stock, imagen, nombre, presentacion)"""
+    data = request.json
+    for producto in datos['productos']:
+        if producto['id'] == id:
+            if 'precio' in data:
+                producto['precio'] = data['precio']
+            if 'stock' in data:
+                producto['stock'] = data['stock']
+            if 'imagen' in data:
+                producto['imagen'] = data['imagen']
+            if 'nombre' in data:
+                producto['nombre'] = data['nombre']
+            if 'presentacion' in data:
+                producto['presentacion'] = data['presentacion']
+            guardar_datos(datos)
+            return jsonify({'success': True, 'producto': producto})
+    return jsonify({'error': 'Producto no encontrado'}), 404
+
+@app.route('/api/productos/<int:id>', methods=['DELETE'])
+def eliminar_producto(id):
+    """Eliminar un producto"""
+    for i, producto in enumerate(datos['productos']):
+        if producto['id'] == id:
+            del datos['productos'][i]
+            guardar_datos(datos)
+            return jsonify({'success': True})
+    return jsonify({'error': 'Producto no encontrado'}), 404
+
+# ========== ENDPOINTS DE PEDIDOS ==========
 @app.route('/api/pedidos', methods=['GET'])
 def get_pedidos():
     return jsonify(datos['pedidos'])
@@ -247,6 +302,7 @@ def actualizar_estado(id):
             return jsonify({'success': True, 'pedido': pedido})
     return jsonify({'error': 'Pedido no encontrado'}), 404
 
+# ========== ENDPOINTS DE ESTADÍSTICAS ==========
 @app.route('/api/estadisticas', methods=['GET'])
 def get_estadisticas():
     total_pedidos = len(datos['pedidos'])
@@ -263,6 +319,8 @@ def get_estadisticas():
         'clientesActivos': len(datos['clientes']),
         'vendedoresActivos': len([u for u in datos['usuarios'] if u['rol'] == 'vendedor'])
     })
+
+# ========== ENDPOINTS DE HEALTH Y HOME ==========
 @app.route('/')
 def home():
     return jsonify({
@@ -270,31 +328,6 @@ def home():
         'estado': 'en linea',
         'endpoints_disponibles': ['/api/health', '/api/productos', '/api/login', '/api/registro', '/api/pedidos']
     })
-
-# ========== ENDPOINTS DE PRODUCTOS (CRUD) ==========
-@app.route('/api/productos/<int:id>', methods=['PUT'])
-def actualizar_producto(id):
-    data = request.json
-    for producto in datos['productos']:
-        if producto['id'] == id:
-            if 'precio' in data:
-                producto['precio'] = data['precio']
-            if 'stock' in data:
-                producto['stock'] = data['stock']
-            if 'imagen' in data:
-                producto['imagen'] = data['imagen']
-            guardar_datos(datos)
-            return jsonify({'success': True, 'producto': producto})
-    return jsonify({'error': 'Producto no encontrado'}), 404
-
-@app.route('/api/productos/<int:id>', methods=['DELETE'])
-def eliminar_producto(id):
-    for i, producto in enumerate(datos['productos']):
-        if producto['id'] == id:
-            del datos['productos'][i]
-            guardar_datos(datos)
-            return jsonify({'success': True})
-    return jsonify({'error': 'Producto no encontrado'}), 404
 
 @app.route('/api/health', methods=['GET'])
 def health():
@@ -309,6 +342,7 @@ if __name__ == '__main__':
     ╠══════════════════════════════════════════════════════╣
     ║   Puerto: {port}                                       ║
     ║   Entorno: {'Producción' if port != 5000 else 'Desarrollo'}
+    ║   CRUD Productos: ACTIVADO                           ║
     ╚══════════════════════════════════════════════════════╝
     """)
     app.run(host='0.0.0.0', port=port, debug=False)
