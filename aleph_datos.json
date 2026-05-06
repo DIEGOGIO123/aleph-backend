@@ -202,7 +202,7 @@
       "montoPagado": 75,
       "correoTicket": "dieggogio@gmail.com",
       "observaciones": "",
-      "estado": "confirmado",
+      "estado": "pendiente",
       "pagado": true,
       "fechaPago": "2026-05-04T22:20:40.768956"
     }

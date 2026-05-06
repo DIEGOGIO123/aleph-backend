@@ -271,6 +271,31 @@ def home():
         'endpoints_disponibles': ['/api/health', '/api/productos', '/api/login', '/api/registro', '/api/pedidos']
     })
 
+# ========== ENDPOINTS DE PRODUCTOS (CRUD) ==========
+@app.route('/api/productos/<int:id>', methods=['PUT'])
+def actualizar_producto(id):
+    data = request.json
+    for producto in datos['productos']:
+        if producto['id'] == id:
+            if 'precio' in data:
+                producto['precio'] = data['precio']
+            if 'stock' in data:
+                producto['stock'] = data['stock']
+            if 'imagen' in data:
+                producto['imagen'] = data['imagen']
+            guardar_datos(datos)
+            return jsonify({'success': True, 'producto': producto})
+    return jsonify({'error': 'Producto no encontrado'}), 404
+
+@app.route('/api/productos/<int:id>', methods=['DELETE'])
+def eliminar_producto(id):
+    for i, producto in enumerate(datos['productos']):
+        if producto['id'] == id:
+            del datos['productos'][i]
+            guardar_datos(datos)
+            return jsonify({'success': True})
+    return jsonify({'error': 'Producto no encontrado'}), 404
+
 @app.route('/api/health', methods=['GET'])
 def health():
     return jsonify({'status': 'OK', 'timestamp': datetime.now().isoformat()})
